@@ -74,11 +74,6 @@ object ModuleManager {
         IndySupport.invalidateInvocations()
     }
 
-    fun checkUpdates() {
-        if (!Config.autoUpdateModules) return
-        cachedModules.forEach(ModuleUpdater::updateModule)
-    }
-
     private fun loadAssetsAndJars(modules: List<Module>) {
         // Load their assets
         loadAssets(modules)

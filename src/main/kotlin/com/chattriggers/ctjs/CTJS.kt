@@ -3,7 +3,6 @@ package com.chattriggers.ctjs
 import com.chattriggers.ctjs.commands.CTCommand
 import com.chattriggers.ctjs.engine.module.ModuleManager
 import com.chattriggers.ctjs.engine.module.ModuleUpdater
-import com.chattriggers.ctjs.loader.UriScheme
 import com.chattriggers.ctjs.minecraft.libs.renderer.Image
 import com.chattriggers.ctjs.minecraft.listeners.ClientListener
 import com.chattriggers.ctjs.minecraft.listeners.MouseListener
@@ -15,7 +14,6 @@ import com.chattriggers.ctjs.minecraft.wrappers.Player
 import com.chattriggers.ctjs.triggers.ForgeTrigger
 import com.chattriggers.ctjs.triggers.TriggerType
 import com.chattriggers.ctjs.utils.Config
-import com.chattriggers.ctjs.utils.UpdateChecker
 import com.chattriggers.ctjs.utils.console.LogType
 import com.google.gson.Gson
 import net.minecraftforge.client.ClientCommandHandler
@@ -77,40 +75,27 @@ object CTJS {
             CPS,
             GuiHandler,
             ClientListener,
-            UpdateChecker,
             MouseListener,
             ModuleUpdater,
             ForgeTrigger
         ).forEach(MinecraftForge.EVENT_BUS::register)
-
-        if (Config.connectToSocket) {
-            UriScheme.installUriScheme()
-            UriScheme.createSocketListener()
-        }
     }
 
     @Mod.EventHandler
     fun init(event: FMLInitializationEvent) {
         Config.loadData()
 
-        // Ensure that reportHashedUUID always runs on a separate thread
         if (Config.threadedLoading) {
             thread {
                 try {
-                    ModuleManager.checkUpdates()
                     ModuleManager.entryPass()
-                    reportHashedUUID()
                 } catch (e: Exception) {
                     e.printTraceToConsole()
                     e.printStackTrace()
                 }
             }
         } else {
-            ModuleManager.checkUpdates()
             ModuleManager.entryPass()
-            thread {
-                reportHashedUUID()
-            }
         }
 
         registerHooks()
@@ -130,20 +115,5 @@ object CTJS {
     private fun registerHooks() {
         ClientCommandHandler.instance.registerCommand(CTCommand)
         Runtime.getRuntime().addShutdownHook(Thread(TriggerType.GameUnload::triggerAll))
-    }
-
-    private fun reportHashedUUID() {
-        if (!Config.reportHash) return
-
-        val uuid = Player.getUUID().encodeToByteArray()
-        val salt = (System.getProperty("user.name") ?: "").encodeToByteArray()
-        val md = MessageDigest.getInstance("SHA-256")
-        md.update(salt)
-        val hashedUUID = md.digest(uuid)
-        val hash = Base64.getUrlEncoder().encodeToString(hashedUUID)
-
-        val url = "${WEBSITE_ROOT}/api/statistics/track?hash=$hash&version=${Reference.MODVERSION}"
-        val connection = makeWebRequest(url)
-        connection.getInputStream()
     }
 }
