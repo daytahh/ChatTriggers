@@ -28,7 +28,6 @@ class CTJSTransformer : BaseClassTransformer() {
         try {
             injectCrashReport()
             injectMinecraft()
-            injectScreenshotHelper()
             injectRenderManager()
             injectEffectRenderer()
             injectGuiScreen()
@@ -36,7 +35,6 @@ class CTJSTransformer : BaseClassTransformer() {
             injectGuiContainer()
             injectTileEntityRendererDispatcher()
             injectGuiIngame()
-            injectGuiIngameForge()
             injectRenderItem()
             injectEntityPlayerSP()
             ModuleManager.setup()

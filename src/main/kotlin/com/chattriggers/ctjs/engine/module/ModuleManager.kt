@@ -48,7 +48,6 @@ object ModuleManager {
 
         File(Reference.DEFAULT_MODULES_FOLDER)
     }
-    val pendingOldModules = mutableListOf<Module>()
 
     fun setup() {
         modulesFolder.mkdirs()
@@ -204,21 +203,6 @@ object ModuleManager {
         }
 
         return false
-    }
-
-    fun tryReportOldVersion(module: Module) {
-        if (World.isLoaded()) {
-            reportOldVersion(module)
-        } else {
-            pendingOldModules.add(module)
-        }
-    }
-
-    fun reportOldVersion(module: Module) {
-        ChatLib.chat(
-            "&cWarning: the module \"${module.name}\" was made for an older version of CT, " +
-                    "so it may not work correctly."
-        )
     }
 
     private fun loadAssets(modules: List<Module>) {

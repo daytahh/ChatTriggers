@@ -16,29 +16,8 @@ import dev.falsehonesty.asmhelper.dsl.inject
 import net.minecraft.util.EnumFacing
 
 fun injectPlayerControllerMP() {
-    injectAttackEntity()
     injectHitBlock()
     injectBreakBlock()
-}
-
-fun injectAttackEntity() = inject {
-    className = "net/minecraft/client/multiplayer/PlayerControllerMP"
-    methodName = "attackEntity"
-    methodDesc = "(L$ENTITY_PLAYER;L$ENTITY;)V"
-    at = At(InjectionPoint.HEAD)
-
-    methodMaps = mapOf("func_78764_a" to "attackEntity")
-
-    codeBlock {
-        val local2 = shadowLocal<MCEntity>()
-
-        code {
-            val event = CancellableEvent()
-            TriggerType.AttackEntity.triggerAll(Entity(local2), event)
-            if (event.isCancelled())
-                methodReturn()
-        }
-    }
 }
 
 fun injectHitBlock() = inject {

@@ -11,8 +11,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.client.event.sound.PlaySoundEvent
 import net.minecraftforge.event.entity.living.LivingDeathEvent
-import net.minecraftforge.event.entity.player.AttackEntityEvent
-import net.minecraftforge.event.world.NoteBlockEvent
 import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
@@ -33,8 +31,6 @@ object WorldListener {
         if (!shouldTriggerWorldLoad) return
 
         TriggerType.WorldLoad.triggerAll()
-        ModuleManager.pendingOldModules.forEach(ModuleManager::reportOldVersion)
-        ModuleManager.pendingOldModules.clear()
         shouldTriggerWorldLoad = false
 
         CTJS.sounds
@@ -89,38 +85,6 @@ object WorldListener {
     }
 
     @SubscribeEvent
-    fun noteBlockEventPlay(event: NoteBlockEvent.Play) {
-        val position = Vector3f(
-            event.pos.x.toFloat(),
-            event.pos.y.toFloat(),
-            event.pos.z.toFloat()
-        )
-
-        TriggerType.NoteBlockPlay.triggerAll(
-            position,
-            event.note.name,
-            event.octave,
-            event
-        )
-    }
-
-    @SubscribeEvent
-    fun noteBlockEventChange(event: NoteBlockEvent.Change) {
-        val position = Vector3f(
-            event.pos.x.toFloat(),
-            event.pos.y.toFloat(),
-            event.pos.z.toFloat()
-        )
-
-        TriggerType.NoteBlockChange.triggerAll(
-            position,
-            event.note.name,
-            event.octave,
-            event
-        )
-    }
-
-    @SubscribeEvent
     fun updatePlayerList(event: TickEvent.ClientTickEvent) {
         if (event.phase == TickEvent.Phase.END)
             return
@@ -148,16 +112,6 @@ object WorldListener {
 
     @SubscribeEvent
     fun livingDeathEvent(event: LivingDeathEvent) {
-        TriggerType.EntityDeath.triggerAll(
-            Entity(event.entity)
-        )
-    }
-
-    @SubscribeEvent
-    fun attackEntityEvent(event: AttackEntityEvent) {
-        TriggerType.EntityDamage.triggerAll(
-            Entity(event.target),
-            PlayerMP(event.entityPlayer)
-        )
+        TriggerType.EntityDeath.triggerAll(Entity(event.entity))
     }
 }

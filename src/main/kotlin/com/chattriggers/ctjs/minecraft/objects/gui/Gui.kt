@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.GlStateManager
 abstract class Gui : GuiScreen() {
     private var onDraw: RegularTrigger? = null
     private var onClick: RegularTrigger? = null
-    private var onScroll: RegularTrigger? = null
     private var onKeyTyped: RegularTrigger? = null
     private var onMouseReleased: RegularTrigger? = null
     private var onMouseDragged: RegularTrigger? = null
@@ -27,13 +26,7 @@ abstract class Gui : GuiScreen() {
     private val buttons = mutableListOf<GuiButton>()
     private var doesPauseGame = false
 
-    init {
-        mc = Client.getMinecraft()
-        MouseListener.registerScrollListener { x, y, delta ->
-            if (isOpen())
-                onScroll?.trigger(arrayOf(x, y, delta))
-        }
-    }
+    init { mc = Client.getMinecraft() }
 
     fun open() {
         GuiHandler.openGui(this)
@@ -82,19 +75,6 @@ abstract class Gui : GuiScreen() {
     fun registerClicked(method: Any) = run {
         onClick = RegularTrigger(method, TriggerType.Other, getLoader())
         onClick
-    }
-
-    /**
-     * Registers a method to be run while the gui is open.
-     * Registered method runs on mouse scroll.
-     * Arguments passed through to method:
-     * - int mouseX
-     * - int mouseY
-     * - int scroll direction
-     */
-    fun registerScrolled(method: Any) = run {
-        onScroll = RegularTrigger(method, TriggerType.Other, getLoader())
-        onScroll
     }
 
     /**

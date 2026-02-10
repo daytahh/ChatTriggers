@@ -80,8 +80,7 @@ object ClientListener {
 
     @SubscribeEvent
     fun onTick(event: TickEvent.ClientTickEvent) {
-        if (event.phase == TickEvent.Phase.END)
-            return
+        if (event.phase == TickEvent.Phase.END) return
 
         tasks.removeAll {
             if (it.delay-- <= 0) {
@@ -90,8 +89,7 @@ object ClientListener {
             } else false
         }
 
-        if (!World.isLoaded())
-            return
+        if (!World.isLoaded()) return
 
         TriggerType.Tick.triggerAll(ticksPassed)
         ticksPassed++
@@ -160,21 +158,8 @@ object ClientListener {
 
     private fun handleOverlayTriggers(event: RenderGameOverlayEvent.Pre) {
         when (event.type) {
-            RenderGameOverlayEvent.ElementType.PLAYER_LIST -> TriggerType.RenderPlayerList.triggerAll(event)
-            RenderGameOverlayEvent.ElementType.CROSSHAIRS -> TriggerType.RenderCrosshair.triggerAll(event)
-            RenderGameOverlayEvent.ElementType.DEBUG -> TriggerType.RenderDebug.triggerAll(event)
-            RenderGameOverlayEvent.ElementType.BOSSHEALTH -> TriggerType.RenderBossHealth.triggerAll(event)
-            RenderGameOverlayEvent.ElementType.HEALTH -> TriggerType.RenderHealth.triggerAll(event)
-            RenderGameOverlayEvent.ElementType.ARMOR -> TriggerType.RenderArmor.triggerAll(event)
-            RenderGameOverlayEvent.ElementType.FOOD -> TriggerType.RenderFood.triggerAll(event)
-            RenderGameOverlayEvent.ElementType.HEALTHMOUNT -> TriggerType.RenderMountHealth.triggerAll(event)
-            RenderGameOverlayEvent.ElementType.EXPERIENCE -> TriggerType.RenderExperience.triggerAll(event)
-            RenderGameOverlayEvent.ElementType.HOTBAR -> TriggerType.RenderHotbar.triggerAll(event)
-            RenderGameOverlayEvent.ElementType.AIR -> TriggerType.RenderAir.triggerAll(event)
             RenderGameOverlayEvent.ElementType.TEXT -> TriggerType.RenderOverlay.triggerAll(event)
             RenderGameOverlayEvent.ElementType.PORTAL -> TriggerType.RenderPortal.triggerAll(event)
-            RenderGameOverlayEvent.ElementType.JUMPBAR -> TriggerType.RenderJumpBar.triggerAll(event)
-            RenderGameOverlayEvent.ElementType.CHAT -> TriggerType.RenderChat.triggerAll(event)
             RenderGameOverlayEvent.ElementType.HELMET -> TriggerType.RenderHelmet.triggerAll(event)
             else -> return
         }
@@ -183,19 +168,6 @@ object ClientListener {
     @SubscribeEvent
     fun onGuiOpened(event: GuiOpenEvent) {
         if (event.gui != null) TriggerType.GuiOpened.triggerAll(event)
-    }
-
-    @SubscribeEvent
-    fun onBlockHighlight(event: DrawBlockHighlightEvent) {
-        if (event.target == null || event.target.blockPos == null) return
-
-        val position = Vector3f(
-            event.target.blockPos.x.toFloat(),
-            event.target.blockPos.y.toFloat(),
-            event.target.blockPos.z.toFloat()
-        )
-
-        TriggerType.BlockHighlight.triggerAll(position, event)
     }
 
     @SubscribeEvent
@@ -319,11 +291,6 @@ object ClientListener {
     //$$    )
     //$$}
     //#endif
-
-    @SubscribeEvent
-    fun onHandRender(e: RenderHandEvent) {
-        TriggerType.RenderHand.triggerAll(e)
-    }
 
     /**
      * Used as a pass through argument in [com.chattriggers.ctjs.engine.IRegister.registerPlayerInteract].\n

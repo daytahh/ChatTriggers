@@ -92,12 +92,6 @@ object CTCommand : CommandBase() {
                 }
 
                 val allModules = listOf(module) + dependencies
-                val modVersion = Reference.MODVERSION.toVersion()
-                allModules.forEach {
-                    val version = it.targetModVersion ?: return@forEach
-                    if (version.majorVersion < modVersion.majorVersion)
-                        ModuleManager.tryReportOldVersion(it)
-                }
 
                 ChatLib.chat("&aSuccessfully imported ${module.metadata.name ?: module.name}")
                 if (Config.moduleImportHelp && module.metadata.helpMessage != null) {

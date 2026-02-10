@@ -18,10 +18,6 @@ import org.lwjgl.input.Keyboard
 fun injectGuiScreen() {
     injectHandleKeyboardInput()
     injectMouseClick()
-    injectMouseRelease()
-    injectMouseDrag()
-    injectTextComponentClick()
-    injectTextComponentHover()
     injectRenderTooltip()
     injectPreBackground()
 }
@@ -93,120 +89,6 @@ fun injectMouseClick() = inject {
         code {
             val event = CancellableEvent()
             TriggerType.GuiMouseClick.triggerAll(local1, local2, local3, local0, event)
-            if (event.isCancelled())
-                methodReturn()
-        }
-    }
-}
-
-fun injectMouseRelease() = inject {
-    className = "net/minecraft/client/gui/GuiScreen"
-    methodName = "handleMouseInput"
-    methodDesc = "()V"
-
-    at = At(
-        InjectionPoint.INVOKE(
-            Descriptor(
-                "net/minecraft/client/gui/GuiScreen",
-                "mouseReleased",
-                "(III)V"
-            )
-        )
-    )
-
-    methodMaps = mapOf(
-        "func_146274_d" to "handleMouseInput",
-        "func_146286_b" to "mouseReleased"
-    )
-
-    codeBlock {
-        val local0 = shadowLocal<GuiScreen>()
-        val local1 = shadowLocal<Int>()
-        val local2 = shadowLocal<Int>()
-        val local3 = shadowLocal<Int>()
-
-        code {
-            val event = CancellableEvent()
-            TriggerType.GuiMouseRelease.triggerAll(local1, local2, local3, local0, event)
-            if (event.isCancelled())
-                methodReturn()
-        }
-    }
-}
-
-fun injectMouseDrag() = inject {
-    className = "net/minecraft/client/gui/GuiScreen"
-    methodName = "handleMouseInput"
-    methodDesc = "()V"
-
-    at = At(
-        InjectionPoint.INVOKE(
-            Descriptor(
-                "net/minecraft/client/gui/GuiScreen",
-                "mouseClickMove",
-                "(IIIJ)V"
-            )
-        )
-    )
-
-    methodMaps = mapOf(
-        "func_146274_d" to "handleMouseInput",
-        "func_146273_a" to "mouseClickMove"
-    )
-
-    codeBlock {
-        val local0 = shadowLocal<GuiScreen>()
-        val local1 = shadowLocal<Int>()
-        val local2 = shadowLocal<Int>()
-        val local3 = shadowLocal<Int>()
-
-        code {
-            val event = CancellableEvent()
-            TriggerType.GuiMouseDrag.triggerAll(local1, local2, local3, local0, event)
-            if (event.isCancelled())
-                methodReturn()
-        }
-    }
-}
-
-fun injectTextComponentClick() = inject {
-    className = "net/minecraft/client/gui/GuiScreen"
-    methodName = "handleComponentClick"
-    methodDesc = "(L$ICHAT_COMPONENT;)Z"
-    at = At(InjectionPoint.HEAD)
-
-    methodMaps = mapOf("func_175276_a" to "handleComponentClick")
-
-    codeBlock {
-        val local1 = shadowLocal<MCITextComponent?>()
-
-        code {
-            if (local1 != null) {
-                val event = CancellableEvent()
-                TriggerType.ChatComponentClicked.triggerAll(TextComponent(local1), event)
-                if (event.isCancelled())
-                    iReturn(0)
-            }
-        }
-    }
-}
-
-fun injectTextComponentHover() = inject {
-    className = "net/minecraft/client/gui/GuiScreen"
-    methodName = "handleComponentHover"
-    methodDesc = "(L$ICHAT_COMPONENT;II)V"
-    at = At(InjectionPoint.HEAD)
-
-    methodMaps = mapOf("func_175272_a" to "handleComponentHover")
-
-    codeBlock {
-        val local1 = shadowLocal<MCITextComponent?>()
-        val local2 = shadowLocal<Int>()
-        val local3 = shadowLocal<Int>()
-
-        code {
-            val event = CancellableEvent()
-            TriggerType.ChatComponentHovered.triggerAll(local1?.let(::TextComponent), local2, local3, event)
             if (event.isCancelled())
                 methodReturn()
         }
