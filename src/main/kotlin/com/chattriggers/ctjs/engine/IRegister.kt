@@ -133,6 +133,24 @@ interface IRegister {
     }
 
     /**
+     * Registers a new trigger that runs before the mouse is scrolled.
+     *
+     * Passes through three arguments:
+     * - The mouse x position
+     * - The mouse y position
+     * - The scroll direction
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    fun registerScrolled(method: Any): RegularTrigger {
+        return RegularTrigger(method, TriggerType.Scrolled, getImplementationLoader())
+    }
+
+    /**
      * Registers a new trigger that runs while a mouse button is being held down.
      *
      * Passes through five arguments:
@@ -615,6 +633,27 @@ interface IRegister {
      */
     fun registerGuiMouseClick(method: Any): EventTrigger {
         return EventTrigger(method, TriggerType.GuiMouseClick, getImplementationLoader())
+    }
+
+    /**
+     * Registers a new trigger that runs whenever a mouse button held and dragged
+     * with a gui open
+     *
+     * Passes through five arguments:
+     * - The mouse x position
+     * - The mouse y position
+     * - The mouse button
+     * - The gui
+     * - The event, which can be cancelled
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    fun registerGuiMouseDrag(method: Any): EventTrigger {
+        return EventTrigger(method, TriggerType.GuiMouseDrag, getImplementationLoader())
     }
 
     /**

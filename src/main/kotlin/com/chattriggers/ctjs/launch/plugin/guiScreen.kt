@@ -18,6 +18,7 @@ import org.lwjgl.input.Keyboard
 fun injectGuiScreen() {
     injectHandleKeyboardInput()
     injectMouseClick()
+    injectMouseDrag()
     injectRenderTooltip()
     injectPreBackground()
 }
@@ -89,6 +90,41 @@ fun injectMouseClick() = inject {
         code {
             val event = CancellableEvent()
             TriggerType.GuiMouseClick.triggerAll(local1, local2, local3, local0, event)
+            if (event.isCancelled())
+                methodReturn()
+        }
+    }
+}
+
+fun injectMouseDrag() = inject {
+    className = "net/minecraft/client/gui/GuiScreen"
+    methodName = "handleMouseInput"
+    methodDesc = "()V"
+
+    at = At(
+        InjectionPoint.INVOKE(
+            Descriptor(
+                "net/minecraft/client/gui/GuiScreen",
+                "mouseClickMove",
+                "(IIIJ)V"
+            )
+        )
+    )
+
+    methodMaps = mapOf(
+        "func_146274_d" to "handleMouseInput",
+        "func_146273_a" to "mouseClickMove"
+    )
+
+    codeBlock {
+        val local0 = shadowLocal<GuiScreen>()
+        val local1 = shadowLocal<Int>()
+        val local2 = shadowLocal<Int>()
+        val local3 = shadowLocal<Int>()
+
+        code {
+            val event = CancellableEvent()
+            TriggerType.GuiMouseDrag.triggerAll(local1, local2, local3, local0, event)
             if (event.isCancelled())
                 methodReturn()
         }
